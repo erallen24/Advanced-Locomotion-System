@@ -52,54 +52,55 @@ class THIRDPERSON_ALS_API AFluidityCharacter : public ACharacter
 public:
 	AFluidityCharacter();
 
+	// =================================================================
+	// MOVED TO PUBLIC: Now the AnimInstance can safely read these!
+	// =================================================================
+
+	// The current active gait
+	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|Locomotion")
+	EGaitState CurrentGait = EGaitState::Run;
+
+	// State Variables
+	UPROPERTY(BlueprintReadWrite, Category = "Fluidity|State")
+	EGunState EquippedGun = EGunState::Unarmed;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Locomotion")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Locomotion")
 	TMap<EGaitState, FFluidityGaitSettings> GaitSettings;
 
-	// The current active gait
-	UPROPERTY(BlueprintReadOnly, Category = "Locomotion")
-	EGaitState CurrentGait = EGaitState::Run;
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Locomotion")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Fluidity|Locomotion")
 	void SendGaitToAnimInstance(EGaitState NewGait);
-
 
 	/* * Enhanced Input
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Input")
 	class UInputMappingContext* DefaultMappingContext;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Input")
 	class UInputAction* MoveAction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Input")
 	class UInputAction* LookAction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Input")
 	class UInputAction* SwitchWeaponAction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Input")
 	class UInputAction* AimAction;
 
 	/* * Animation Layers
 	 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animation")
 	TSubclassOf<UAnimInstance> UnarmedAnimLayer;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animation")
 	TSubclassOf<UAnimInstance> PistolAnimLayer;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animation")
 	TSubclassOf<UAnimInstance> RifleAnimLayer;
-
-	/*
-	 * State Variables
-	 */
-	UPROPERTY(BlueprintReadWrite, Category = "State")
-	EGunState EquippedGun = EGunState::Unarmed;
 
 	/* * Input Callbacks
 	 */
@@ -116,6 +117,6 @@ protected:
 	/*
 	 * Custom Functions
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Locomotion")
+	UFUNCTION(BlueprintCallable, Category = "Fluidity|Locomotion")
 	void UpdateGaitSettings(EGaitState NewGait);
 };
