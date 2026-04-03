@@ -7,6 +7,21 @@
 #include "FluidityCharacter.h"
 #include "FCFBaseAnimInstance.generated.h"
 
+USTRUCT(BlueprintType)
+struct FFluidityDebugOptions
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bShowLocomotionData = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bShowGaitData = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bDistanceMatching = true;
+};
+
 UENUM(BlueprintType)
 enum class ELocomotionDirection : uint8
 {
@@ -27,11 +42,18 @@ class THIRDPERSON_ALS_API UFCFBaseAnimInstance : public UAnimInstance
 public:
 	virtual void NativeInitializeAnimation() override;
 
-	// This matches your "Blueprint Thread Safe Update Animation" node!
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Fluidity|Debug")
+	FFluidityDebugOptions DebugOptions;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|State")
 	EGaitState CurrentGait;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|State")
+	float GaitValue;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|Locomotion")
 	ELocomotionDirection VelocityLocomotionDirection;
@@ -45,7 +67,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|References")
 	class UCharacterMovementComponent* MovementComponent;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|Locomotion")
+	float LocomotionSpeed;
+
 protected:
+
+
 	/** Essential References */
 	UPROPERTY(BlueprintReadOnly, Category = "Fluidity|References")
 	class AFluidityCharacter* Character;
@@ -116,6 +143,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Fluidity|Update")
 	void UpdateOrientationData();
 
+	UFUNCTION(BlueprintCallable, Category = "Fluidity|Debug")
+	void DrawDebug();
+
 private:
+	void DebugPrintString(const FString& Key, const FString& Value, FLinearColor TextColor);
+	void DebugDrawVector(const FVector& Vector, FLinearColor LineColor, const FString& Text, double MaxLength);
+
 	ELocomotionDirection CalculateLocomotionDirection(float Angle, float ForwardMin, float ForwardMax, float BackwardMin, float BackwardMax, float Deadzone, ELocomotionDirection CurrentDir);
 };

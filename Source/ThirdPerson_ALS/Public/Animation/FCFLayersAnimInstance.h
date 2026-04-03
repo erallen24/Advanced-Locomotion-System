@@ -59,6 +59,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animations|Stop")
 	FFluidityDirectionalAnimations JogStopAnimations;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animations|Start")
+	FFluidityDirectionalAnimations WalkStartAnimations;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Fluidity|Animations|Start")
+	FFluidityDirectionalAnimations JogStartAnimations;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations|Idle")
 	class UAnimSequence* IdleAnimation;
 
@@ -75,6 +81,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
 	void UpdateStopAnims(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
+
+	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
+	void SetupStartAnims(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);
 
 	UFUNCTION(BlueprintCallable, meta = (BlueprintThreadSafe))
 	void IdleOnUpdate(const FAnimUpdateContext& Context, const FAnimNodeReference& Node);

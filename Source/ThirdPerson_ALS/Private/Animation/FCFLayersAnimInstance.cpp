@@ -112,6 +112,36 @@ void UFCFLayersAnimInstance::UpdateStopAnims(const FAnimUpdateContext& Context, 
 	}
 }
 
+void UFCFLayersAnimInstance::SetupStartAnims(const FAnimUpdateContext& Context, const FAnimNodeReference& Node)
+{
+	if (!MainAnimInstance) return;
+
+	// 1. Grab current states
+	EGaitState CurrentGait = MainAnimInstance->CurrentGait;
+	ELocomotionDirection CurrentDir = MainAnimInstance->VelocityLocomotionDirection;
+
+	// 2. Select the correct Start animation
+	UAnimSequence* SelectedSequence = nullptr;
+	if (CurrentGait == EGaitState::Walk)
+	{
+		SelectedSequence = GetAnimFromDirection(WalkStartAnimations, CurrentDir);
+	}
+	else
+	{
+		SelectedSequence = GetAnimFromDirection(JogStartAnimations, CurrentDir);
+	}
+
+	// 3. Inject it into the Sequence Player
+	EAnimNodeReferenceConversionResult ConversionResult;
+	FSequencePlayerReference SequencePlayer = USequencePlayerLibrary::ConvertToSequencePlayer(Node, ConversionResult);
+
+	if (ConversionResult == EAnimNodeReferenceConversionResult::Succeeded)
+	{
+		// Set the sequence. The state machine will automatically start it at 0.0s when entered.
+		USequencePlayerLibrary::SetSequence(SequencePlayer, SelectedSequence);
+	}
+}
+
 void UFCFLayersAnimInstance::IdleOnUpdate(const FAnimUpdateContext& Context, const FAnimNodeReference& Node)
 {
 	// Ensure we have a valid animation to play
